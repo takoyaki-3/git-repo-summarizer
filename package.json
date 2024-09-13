@@ -6,13 +6,14 @@
   "type": "module",
   "scripts": {
     "summarize": "node toMarkdown.js",
-    "gemini": "node geminiRequest.js"
+    "mkdoc": "node geminiRequest.js"
   },
   "bin": {
     "my-repo-summarizer": "./summarize.js"
   },
   "dependencies": {
     "axios": "^1.4.0",
-    "mime-types": "^2.1.27"
+    "mime-types": "^2.1.27",
+    "yargs": "^17.7.2"
   }
 }

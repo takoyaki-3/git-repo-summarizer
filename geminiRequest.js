@@ -2,11 +2,38 @@ import axios from 'axios';
 import generateOutput from './utils/summarize.js';
 import getTimestampedFileName from './utils/generateFileName.js';
 import { promises as fs } from 'fs';
+import yargs from 'yargs/yargs';
+import { hideBin } from 'yargs/helpers';
+
+// コマンドライン引数をyargsでパース
+const argv = yargs(hideBin(process.argv))
+  .option('model_id', {
+    alias: 'm', // `npm run mkdoc` で実行する場合はエリアス利用不可
+    type: 'string',
+    description: 'GeminiのモデルIDを指定します',
+    default: 'gemini-1.5-pro',  // デフォルトのモデルID
+  })
+  .option('target', {
+    alias: 't', // `npm run mkdoc` で実行する場合はエリアス利用不可
+    type: 'string',
+    description: 'ターゲットGitリポジトリのパス',
+    demandOption: true,  // 必須引数として指定
+  })
+  .option('output', {
+    alias: 'o', // `npm run mkdoc` で実行する場合はエリアス利用不可
+    type: 'string',
+    description: '出力ファイル名',
+    default: getTimestampedFileName('gemini-output'),  // デフォルトで日時付きファイル名を生成
+  })
+  .strict()  // 不正な引数がある場合にエラーを発生させる
+  .help()    // ヘルプオプションを追加
+  .argv;
 
 // Google Gemini APIのエンドポイントとAPIキー
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
-const API_KEY = process.env.GOOGLE_API_KEY;
-const outputFile = process.argv[3] || getTimestampedFileName('gemini-output');  // デフォルトで日時付きのファイル名を生成
+const GEMINI_MODEL_ID = argv.model_id;
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL_ID}:generateContent`;
+const API_KEY = process.env.GOOGLE_API_KEY;  // 環境変数からAPIキーを取得
+const outputFile = argv.output;  // 出力ファイル名
 const systemPromptFile = 'prompts/generage-document-prompt.md';  // システムプロンプトのマークダウンファイル
 
 // Gemini APIにリクエストを投げる関数
@@ -30,6 +57,10 @@ async function requestGemini(content) {
       },
     });
 
+    if (response.status !== 200) {
+      console.error('Gemini APIリクエストが失敗しました:', response.status, response.statusText);
+    }
+
     // レスポンスを返す
     return response.data;
   } catch (error) {
@@ -44,7 +75,7 @@ async function main() {
     const systemPrompt = await fs.readFile(systemPromptFile, 'utf-8');
 
     // Gitリポジトリの内容をマークダウン形式で生成
-    const markdownContent = await generateOutput(process.argv[2]);
+    const markdownContent = await generateOutput(argv.target);
 
     // システムプロンプトとマークダウンコンテンツを結合
     const fullContent = `${systemPrompt}\n\n${markdownContent}`;
@@ -57,7 +88,7 @@ async function main() {
       await fs.writeFile(outputFile, response.candidates[0].content.parts[0].text, 'utf-8');
       console.log(`Gemini output saved to: ${outputFile}`);
     } else {
-      console.error('Gemini APIからの応答が不正です。');
+      console.error('Gemini APIからの応答が不正です。', JSON.stringify(response, null, 2));
     }
   } catch (error) {
     console.error('エラーが発生しました:', error);
