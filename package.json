@@ -1,0 +1,18 @@
+{
+  "name": "git-repo-summarizer",
+  "version": "1.0.0",
+  "description": "A tool to summarize Git repositories and make requests to Google Gemini.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "summarize": "node toMarkdown.js",
+    "gemini": "node geminiRequest.js"
+  },
+  "bin": {
+    "my-repo-summarizer": "./summarize.js"
+  },
+  "dependencies": {
+    "axios": "^1.4.0",
+    "mime-types": "^2.1.27"
+  }
+}
