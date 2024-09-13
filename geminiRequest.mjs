@@ -1,47 +1,23 @@
 import axios from 'axios';
-import generateOutput from './utils/summarize.js';
-import getTimestampedFileName from './utils/generateFileName.js';
+import generateOutput from './utils/summarize.mjs';
+import getTimestampedFileName from './utils/generateFileName.mjs';
 import { promises as fs } from 'fs';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 
-// コマンドライン引数をyargsでパース
-const argv = yargs(hideBin(process.argv))
-  .option('model_id', {
-    alias: 'm', // `npm run mkdoc` で実行する場合はエリアス利用不可
-    type: 'string',
-    description: 'GeminiのモデルIDを指定します',
-    default: 'gemini-1.5-pro',  // デフォルトのモデルID
-  })
-  .option('target', {
-    alias: 't', // `npm run mkdoc` で実行する場合はエリアス利用不可
-    type: 'string',
-    description: 'ターゲットGitリポジトリのパス',
-    demandOption: true,  // 必須引数として指定
-  })
-  .option('output', {
-    alias: 'o', // `npm run mkdoc` で実行する場合はエリアス利用不可
-    type: 'string',
-    description: '出力ファイル名',
-    default: getTimestampedFileName('gemini-output'),  // デフォルトで日時付きファイル名を生成
-  })
-  .strict()  // 不正な引数がある場合にエラーを発生させる
-  .help()    // ヘルプオプションを追加
-  .argv;
-
 // Google Gemini APIのエンドポイントとAPIキー
-const GEMINI_MODEL_ID = argv.model_id;
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL_ID}:generateContent`;
-const API_KEY = process.env.GOOGLE_API_KEY;  // 環境変数からAPIキーを取得
+let GEMINI_MODEL_ID;
+let GEMINI_API_URL;
+let API_KEY = process.env.GOOGLE_API_KEY;  // 環境変数からAPIキーを取得
 if (!API_KEY) {
   console.error("Error: GOOGLE_API_KEY is not set. Please set the API key as an environment variable.");
   process.exit(1);
 }
-const outputFile = argv.output;  // 出力ファイル名
-const systemPromptFile = 'prompts/generage-document-prompt.md';  // システムプロンプトのマークダウンファイル
+let outputFile;  // 出力ファイル名
+let systemPromptFile = 'prompts/generage-document-prompt.md';  // システムプロンプトのマークダウンファイル
 
 // Gemini APIにリクエストを投げる関数
-async function requestGemini(content) {
+export async function requestGemini(content) {
   const requestBody = {
     contents: [
       {
@@ -72,9 +48,38 @@ async function requestGemini(content) {
   }
 }
 
-// メイン処理
+// メイン処理を関数として定義
 async function main() {
   try {
+    // コマンドライン引数をyargsでパース
+    const argv = yargs(hideBin(process.argv))
+      .option('model_id', {
+        alias: 'm',
+        type: 'string',
+        description: 'GeminiのモデルIDを指定します',
+        default: 'gemini-1.5-pro',
+      })
+      .option('target', {
+        alias: 't',
+        type: 'string',
+        description: 'ターゲットGitリポジトリのパス',
+        demandOption: true,
+      })
+      .option('output', {
+        alias: 'o',
+        type: 'string',
+        description: '出力ファイル名',
+        default: getTimestampedFileName('gemini-output'),
+      })
+      .strict()
+      .help()
+      .argv;
+
+    // Google Gemini APIのエンドポイントとAPIキー
+    GEMINI_MODEL_ID = argv.model_id;
+    GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL_ID}:generateContent`;
+    outputFile = argv.output;  // 出力ファイル名
+    
     // システムプロンプトのマークダウンを読み込む
     const systemPrompt = await fs.readFile(systemPromptFile, 'utf-8');
 
@@ -99,4 +104,5 @@ async function main() {
   }
 }
 
+// モジュールが直接実行された場合のみ main() を呼び出す
 main().catch(console.error);

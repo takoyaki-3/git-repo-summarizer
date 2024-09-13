@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
-import generateOutput from './utils/summarize.js';
-import getTimestampedFileName from './utils/generateFileName.js';
+import generateOutput from './utils/summarize.mjs';
+import getTimestampedFileName from './utils/generateFileName.mjs';
 import yargs from 'yargs/yargs';
 import { hideBin } from 'yargs/helpers';
 
@@ -24,7 +24,7 @@ const argv = yargs(hideBin(process.argv))
   .argv;
 
 // メイン処理
-async function main() {
+export default async function main() {
   try {
     const repoPath = argv.target;  // Gitリポジトリのパス
     const outputFile = argv.output;  // 出力ファイル名

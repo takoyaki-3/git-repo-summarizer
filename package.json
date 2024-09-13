@@ -5,15 +5,25 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "summarize": "node toMarkdown.js",
-    "mkdoc": "node geminiRequest.js"
+    "summarize": "node toMarkdown.mjs",
+    "mkdoc": "node geminiRequest.mjs",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "bin": {
-    "my-repo-summarizer": "./summarize.js"
+    "my-repo-summarizer": "./geminiRequest.mjs"
   },
   "dependencies": {
     "axios": "^1.7.7",
     "mime-types": "^2.1.35",
     "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "transform": {}
   }
 }

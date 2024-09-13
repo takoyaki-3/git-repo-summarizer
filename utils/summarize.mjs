@@ -111,3 +111,12 @@ export default async function generateOutput(repoPath) {
 
   return outputText;
 }
+
+export {
+  getGitFiles,
+  isIgnored,
+  createFileTree,
+  formatTree,
+  isTextFile,
+  generateOutput,
+};
