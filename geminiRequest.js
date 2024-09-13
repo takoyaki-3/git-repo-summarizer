@@ -33,6 +33,10 @@ const argv = yargs(hideBin(process.argv))
 const GEMINI_MODEL_ID = argv.model_id;
 const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL_ID}:generateContent`;
 const API_KEY = process.env.GOOGLE_API_KEY;  // 環境変数からAPIキーを取得
+if (!API_KEY) {
+  console.error("Error: GOOGLE_API_KEY is not set. Please set the API key as an environment variable.");
+  process.exit(1);
+}
 const outputFile = argv.output;  // 出力ファイル名
 const systemPromptFile = 'prompts/generage-document-prompt.md';  // システムプロンプトのマークダウンファイル
 
