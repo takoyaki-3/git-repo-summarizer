@@ -6,7 +6,7 @@ export async function sendGeminiRequest(modelId, apiKey, prompt) {
       {
         parts: [
           {
-            text: prompt,  // システムプロンプトとマークダウンコンテンツを一緒に送信
+            text: prompt,
           },
         ],
       },
@@ -25,7 +25,6 @@ export async function sendGeminiRequest(modelId, apiKey, prompt) {
       console.error('Gemini APIリクエストが失敗しました:', response.status, response.statusText);
     }
 
-    // レスポンスを返す
     return response.data;
   } catch (error) {
     console.error('Gemini APIリクエスト中にエラーが発生しました:', error);

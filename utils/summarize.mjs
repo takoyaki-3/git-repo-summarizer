@@ -6,7 +6,6 @@ import mime from 'mime-types';
 // Git管理されたファイルリストを取得
 function getGitFiles(repoPath) {
   try {
-    // Git管理されたファイルだけをリストアップする
     const result = execSync(`git -C ${repoPath} ls-files`, { encoding: 'utf-8' });
     return result.trim().split('\n');
   } catch (error) {
@@ -15,26 +14,16 @@ function getGitFiles(repoPath) {
   }
 }
 
-// 本質的でないファイルのリスト
-const ignoredFiles = [
-  'package-lock.json',
-  'yarn.lock',
-  'node_modules',
-  'dist',
-  'build',
-  '.git'
-];
+const ignoredFiles = ['package-lock.json', 'yarn.lock', 'node_modules', 'dist', 'build', '.git'];
 
-// 無視すべきファイルかどうかを判定
 function isIgnored(file) {
   return ignoredFiles.some((ignored) => file.includes(ignored));
 }
 
-// ファイルツリーを作成
 function createFileTree(files) {
   const tree = {};
   files.forEach((file) => {
-    if (!isIgnored(file)) {  // 無視リストにないファイルのみ処理
+    if (!isIgnored(file)) {
       const parts = file.split(path.sep);
       let currentLevel = tree;
       parts.forEach((part) => {
@@ -48,7 +37,6 @@ function createFileTree(files) {
   return tree;
 }
 
-// ファイルツリーをフォーマット
 function formatTree(tree, indent = '') {
   let formatted = '';
   for (const key in tree) {
@@ -58,24 +46,52 @@ function formatTree(tree, indent = '') {
   return formatted;
 }
 
-// ファイルがテキストかどうかを判定
 function isTextFile(filePath) {
   const mimeType = mime.lookup(filePath);
   if (mimeType && mimeType.startsWith('text')) {
     return true;
   }
   const textFileExtensions = [
-    '.md', '.yml', '.yaml', '.json', '.jsx', '.js', '.ts', '.py', '.sh', 
-    '.html', '.css', '.scss', '.xml', '.java', '.rb', '.php', '.go', '.rs', 
-    '.txt', 'Dockerfile', 'Makefile'
+    '.md',
+    '.yml',
+    '.yaml',
+    '.json',
+    '.jsx',
+    '.js',
+    '.ts',
+    '.py',
+    '.sh',
+    '.html',
+    '.css',
+    '.scss',
+    '.xml',
+    '.java',
+    '.rb',
+    '.php',
+    '.go',
+    '.rs',
+    '.txt',
+    'Dockerfile',
+    'Makefile',
+    '.gitignore',
+    '.editorconfig',
+    '.mjs',
+    '.c',
+    '.cpp',
+    '.h',
+    '.hpp',
+    '.cs',
+    '.swift',
+    '.kt',
+    '.gradle',
+    '.babelrc',
   ];
   const ext = path.extname(filePath);
   return textFileExtensions.includes(ext);
 }
 
-// レポート生成
-export default async function generateOutput(repoPath) {
-  const gitFiles = getGitFiles(repoPath);  // Git管理されたファイルのみ取得
+export async function generateOutput(repoPath) {
+  const gitFiles = getGitFiles(repoPath);
   if (gitFiles.length === 0) {
     console.error('Git管理されたファイルが見つかりませんでした。');
     return;
@@ -86,7 +102,7 @@ export default async function generateOutput(repoPath) {
   outputText += formatTree(fileTree) + '\n';
 
   for (const file of gitFiles) {
-    if (isIgnored(file)) continue;  // 無視リストにあるファイルをスキップ
+    if (isIgnored(file)) continue;
     const filePath = path.join(repoPath, file);
     outputText += `#### ${file}\n\n`;
 
@@ -94,11 +110,9 @@ export default async function generateOutput(repoPath) {
       try {
         const content = await fs.readFile(filePath, 'utf-8');
         if (content.length > 100000) {
-          // 1万文字を超える場合
           outputText += `（大きすぎるファイル）\n\n`;
           outputText += `サンプル: \n\`\`\`\n${content.slice(0, 1000)}\n...\n\`\`\`\n\n`;
         } else {
-          // 1万文字以下の場合
           outputText += `\`\`\`\n${content}\n\`\`\`\n\n`;
         }
       } catch (e) {
@@ -111,12 +125,3 @@ export default async function generateOutput(repoPath) {
 
   return outputText;
 }
-
-export {
-  getGitFiles,
-  isIgnored,
-  createFileTree,
-  formatTree,
-  isTextFile,
-  generateOutput,
-};
