@@ -1,8 +1,8 @@
 {
   "name": "git-repo-summarizer",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A tool to summarize Git repositories and make requests to Google Gemini.",
-  "main": "index.js",
+  "main": "index.mjs",
   "type": "module",
   "scripts": {
     "summarize": "node index.mjs summarize",
@@ -10,7 +10,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "bin": {
-    "my-repo-summarizer": "./index.mjs"
+    "git-repo-summarizer": "./index.mjs"
   },
   "dependencies": {
     "axios": "^1.7.7",

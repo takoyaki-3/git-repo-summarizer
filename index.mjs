@@ -1,5 +1,6 @@
-import { readGitData } from './utils/gitUtils.mjs';
-import { readSystemPrompt, saveDocument } from './utils/fileUtils.mjs';
+#!/usr/bin/env node
+
+import { readSystemPrompt } from './utils/fileUtils.mjs';
 import { sendGeminiRequest } from './utils/apiUtils.mjs';
 import { generateOutput } from './utils/summarize.mjs';
 import yargs from 'yargs';
