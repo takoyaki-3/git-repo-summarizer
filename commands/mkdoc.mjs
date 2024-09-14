@@ -32,6 +32,11 @@ export const mkdocCommand = {
         description: '出力ファイルの名前',
         type: 'string',
         default: () => getTimestampedFileName('gemini-output'),
+      })
+      .option('api_key', {
+        alias: 'k',
+        description: 'Google Gemini APIのAPIキー',
+        type: 'string',
       }),
   handler: async (args) => {
     try {
@@ -40,10 +45,10 @@ export const mkdocCommand = {
       const markdown = await generateOutput(args.target);
       const prompt = systemPrompt + '\n' + markdown;
 
-      const API_KEY = process.env.GOOGLE_API_KEY;
+      const API_KEY = args.api_key || process.env.GOOGLE_API_KEY;
       if (!API_KEY) {
         console.error(
-          'Error: GOOGLE_API_KEY is not set. Please set the API key as an environment variable.'
+          'Error: GOOGLE_API_KEY is not set. Please set the API key as a command-line argument or environment variable.'
         );
         process.exit(1);
       }

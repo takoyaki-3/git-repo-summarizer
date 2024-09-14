@@ -11,6 +11,55 @@
 - ファイルツリーを用いてリポジトリの構造を視覚化し、全体像を把握しやすくします。
 - Markdown形式で出力するため、READMEファイルなどに簡単に組み込むことができます。
 
+-------------------
+
+## グローバルインストール
+
+このツールは、グローバルにインストールすることで、どのディレクトリからでもコマンドを使用できるようになります。
+
+### 手順
+
+1. プロジェクトをグローバルインストールします。
+
+```bash
+npm install -g
+```
+
+これにより、`git-repo-summarizer` コマンドがグローバルに登録されます。
+
+### 確認
+
+グローバルインストールが成功したかを確認するには、以下のコマンドを実行してバージョンを確認します。
+
+```bash
+git-repo-summarizer --version
+```
+
+バージョンが表示されれば、インストールは成功です。
+
+
+グローバルにインストールした後、以下のようにプロジェクトのコマンドをどのディレクトリからでも実行できます。
+
+### ドキュメント生成
+
+```bash
+git-repo-summarizer mkdoc -- -t /path/to/your/repo -o document.md
+```
+
+### Gitリポジトリ情報のMarkdown形式出力
+
+```bash
+git-repo-summarizer summarize -- -t /path/to/your/repo -o output.md
+```
+
+### READMEの自動更新
+
+```bash
+git-repo-summarizer readme -- -i /path/to/your/readme -o updated-readme.md
+```
+
+--------------------
+
 ## 環境構築
 
 ### 前提条件
@@ -64,6 +113,7 @@ npm run mkdoc -- -t /path/to/your/repo -o document.md
 - `-t`, `--target`: 対象のリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
 - `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `gemini-output-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
 - `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
+- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` が設定されている場合はそちらが優先されます。
 
 **実行例**
 
@@ -104,6 +154,8 @@ npm run readme -- -i /path/to/your/readme -o updated-readme.md
 - `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `updated-readme-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
 - `-t`, `--target`: 対象のGitリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
 - `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
+- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` が設定されている場合はそちらが優先されます。
+
 
 **実行例**
 
@@ -118,35 +170,41 @@ npm run readme -- -t ./my-project -o my-project-readme.md
 │   ├── mkdoc.mjs
 │   ├── readme.mjs
 │   └── summarize.mjs
+├── index.mjs
+├── package.json
 ├── prompts
 │   ├── generage-document-prompt.md
 │   └── update-readme-prompt.md
-├── utils
-│   ├── apiUtils.mjs
-│   ├── fileUtils.mjs
-│   └── generateFileName.mjs
-├── .babelrc
-├── index.mjs
-└── package.json
-
+└── utils
+    ├── apiUtils.mjs
+    ├── apiUtils.test.js
+    ├── fileUtils.mjs
+    ├── generateFileName.mjs
+    ├── generateFileName.test.js
+    ├── gitUtils.mjs
+    └── summarize.mjs
 ```
 
 ### ファイル説明
 
 - **.babelrc**: Babelの設定ファイルです。
-- **index.mjs**: ツールのエントリーポイントです。コマンドライン引数を解析し、適切な処理を実行します。
-- **package.json**: プロジェクトの依存関係とスクリプトを定義します。
 - **commands**: コマンドラインツールのコマンドを定義したファイル群です。
   - **mkdoc.mjs**: `npm run mkdoc` コマンドの実装です。Gemini API を用いてドキュメントを生成します。
   - **readme.mjs**: `npm run readme` コマンドの実装です。README の自動更新を行います。
   - **summarize.mjs**: `npm run summarize` コマンドの実装です。Git リポジトリの情報を Markdown 形式で出力します。
+- **index.mjs**: ツールのエントリーポイントです。コマンドライン引数を解析し、適切な処理を実行します。
+- **package.json**: プロジェクトの依存関係とスクリプトを定義します。
 - **prompts**: Gemini に渡すプロンプトを定義したファイル群です。
   - **generage-document-prompt.md**: ドキュメント生成の指示を記述した Markdown ファイルです。
   - **update-readme-prompt.md**: README の自動更新の指示を記述した Markdown ファイルです。
 - **utils**: ユーティリティ関数を定義したファイル群です。
   - **apiUtils.mjs**: Google Gemini API へのリクエスト処理を行います。
+  - **apiUtils.test.js**: apiUtils.mjs のユニットテストです。
   - **fileUtils.mjs**: ファイルの読み書きなどを行います。
   - **generateFileName.mjs**: タイムスタンプ付きのファイル名を生成します。
+  - **generateFileName.test.js**: generateFileName.mjs のユニットテストです。
+  - **gitUtils.mjs**: Git リポジトリの情報取得を行います。
+  - **summarize.mjs**: Git リポジトリの情報を Markdown 形式にまとめます。
 
 ## 補足
 
