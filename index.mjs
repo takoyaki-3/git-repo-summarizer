@@ -7,6 +7,15 @@ import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { writeFileSync } from 'fs';
 import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// `__dirname` をエミュレートして現在のファイルのディレクトリを取得
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// システムプロンプトのパスをコードのファイルからの相対パスに設定
+const systemPromptPath = path.join(__dirname, 'prompts/generage-document-prompt.md');
 
 // 引数を処理
 const argv = yargs(hideBin(process.argv))
@@ -49,7 +58,7 @@ const argv = yargs(hideBin(process.argv))
     },
   }, async (args) => {
     try {
-      const systemPrompt = readSystemPrompt('prompts/generage-document-prompt.md');
+      const systemPrompt = readSystemPrompt(systemPromptPath); // 相対パスでの読み込み
       const markdown = await generateOutput(args.target);
       const prompt = systemPrompt + '\n' + markdown;
 

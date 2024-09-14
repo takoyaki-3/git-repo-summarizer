@@ -1,6 +1,6 @@
 {
   "name": "git-repo-summarizer",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A tool to summarize Git repositories and make requests to Google Gemini.",
   "main": "index.mjs",
   "type": "module",
