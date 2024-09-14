@@ -90,48 +90,57 @@ npm run summarize -- -t /path/to/your/repo -o output.md
 npm run summarize -- -t ./my-project -o my-project-summary.md
 ```
 
+### READMEの自動更新
+
+以下のコマンドを実行して、READMEを自動更新します。
+
+```bash
+npm run readme -- -i /path/to/your/readme -o updated-readme.md
+```
+
+**オプション**
+- `-i`, `--input`: 更新対象のREADMEファイルのパスを指定します。
+- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `updated-readme-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
+
+
 ## ファイル構成
 
 ```
-├── geminiRequest.mjs
-├── geminiRequest.test.js
+├── .babelrc
+├── README.md
 ├── index.mjs
 ├── package.json
 ├── prompts
-│   └── generage-document-prompt.md
-├── toMarkdown.mjs
-└── utils
-    ├── generateFileName.mjs
-    ├── generateFileName.test.js
-    ├── summarize.mjs
-    └── summarize.test.js
+│   ├── generage-document-prompt.md
+│   └── update-readme-prompt.md
+├── utils
+│   ├── apiUtils.mjs
+│   ├── fileUtils.mjs
+│   ├── generateFileName.mjs
+│   ├── generateFileName.test.js
+│   ├── gitUtils.mjs
+│   ├── summarize.mjs
+│   └── summarize.test.js
+
 ```
 
 ### ファイル説明
 
-- **geminiRequest.mjs:** Google Gemini API へのリクエスト処理を行います。
-  - `GEMINI_MODEL_ID` と `GEMINI_API_URL` は、利用する Gemini のモデルと API エンドポイントを定義します。
-  - `systemPromptFile` は、ドキュメント生成の指示を記述した Markdown ファイルを指定します。
-  - メイン処理では、システムプロンプトと Git リポジトリの内容を結合して Gemini API に送信し、その結果をファイルに書き込みます。
-- **geminiRequest.test.js:** `geminiRequest.mjs` のテストコードです。
-- **index.mjs:** `generateOutput` と `requestGemini` 関数をエクスポートします。
-- **package.json:** プロジェクトの依存関係とスクリプトを定義します。
-  - `scripts` セクションでは、以下のコマンドが定義されています。
-    - `summarize`: `toMarkdown.mjs` を実行して、Git リポジトリの情報を Markdown 形式で出力します。
-    - `mkdoc`: `geminiRequest.mjs` を実行して、Gemini API を用いてドキュメントを生成します。
-    - `test`: テストを実行します。
-- **prompts/generage-document-prompt.md:** ドキュメント生成の指示を記述した Markdown ファイルです。このファイルの内容が Gemini API に送信され、ドキュメントの生成に利用されます。
-- **toMarkdown.mjs:** Git リポジトリの情報を Markdown 形式に変換します。
-  - `generateOutput` 関数は、Git リポジトリのパスを受け取り、その内容を Markdown 形式の文字列として返します。
-- **utils/generateFileName.mjs:** タイムスタンプ付きのファイル名を生成します。
-- **utils/generateFileName.test.js:** `generateFileName.mjs` のテストコードです。
-- **utils/summarize.mjs:** Git リポジトリの情報を収集し、Markdown 形式のレポートを生成します。
-  - `isIgnored` 関数は、無視すべきファイルかどうかを判定します。
-  - `createFileTree` 関数は、ファイルのリストからファイルツリーを作成します。
-  - `formatTree` 関数は、ファイルツリーをフォーマットして文字列として返します。
-  - `isTextFile` 関数は、ファイルがテキストファイルかどうかを判定します。
-  - `generateOutput` 関数は、Git リポジトリの情報を収集し、Markdown 形式のレポートを生成します。
-- **utils/summarize.test.js:** `summarize.mjs` のテストコードです。
+- **.babelrc**: Babelの設定ファイルです。
+- **README.md**: このファイルです。
+- **index.mjs**: ツールのエントリーポイントです。コマンドライン引数を解析し、適切な処理を実行します。
+- **package.json**: プロジェクトの依存関係とスクリプトを定義します。
+- **prompts**: Geminiに渡すプロンプトを定義したファイル群です。
+  - **generage-document-prompt.md**: ドキュメント生成の指示を記述した Markdown ファイルです。このファイルの内容が Gemini API に送信され、ドキュメントの生成に利用されます。
+  - **update-readme-prompt.md**: READMEの自動更新の指示を記述した Markdown ファイルです。
+- **utils**: ユーティリティ関数を定義したファイル群です。
+  - **apiUtils.mjs**: Google Gemini API へのリクエスト処理を行います。
+  - **fileUtils.mjs**: ファイルの読み書きなどを行います。
+  - **generateFileName.mjs**: タイムスタンプ付きのファイル名を生成します。
+  - **generateFileName.test.js**: `generateFileName.mjs` のテストコードです。
+  - **gitUtils.mjs**: Gitコマンドの実行結果を取得するなどの処理を行います。
+  - **summarize.mjs**: Git リポジトリの情報を収集し、Markdown 形式のレポートを生成します。
+  - **summarize.test.js**: `summarize.mjs` のテストコードです。
 
 ## 補足
 
