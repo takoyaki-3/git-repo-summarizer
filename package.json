@@ -25,5 +25,7 @@
   },
   "jest": {
     "transform": {}
-  }
+  },
+  "author": "takoyaki-3",
+  "license": "MIT"
 }
