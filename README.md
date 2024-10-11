@@ -22,7 +22,7 @@
 1. プロジェクトをグローバルインストールします。
 
 ```bash
-npm install -g
+npm install -g git-repo-summarizer
 ```
 
 これにより、`git-repo-summarizer` コマンドがグローバルに登録されます。
