@@ -15,8 +15,8 @@ export const updateDiffCommand = {
   describe: '指定されたテキストに基づいてdiff.patchを生成する',
   builder: (yargs) =>
     yargs
-      .option('text', {
-        alias: 't',
+      .option('change', {
+        alias: 'c',
         description: '変更点を箇条書きで指定するテキスト',
         type: 'string',
         demandOption: true,

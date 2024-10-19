@@ -141,12 +141,12 @@ git-repo-summarizer patch -- -d /path/to/your/diff -t /path/to/your/repo
 **注意：このコマンドは現在試用期間中であり今後仕様の変更や削除が行われる場合があります**
 
 ```bash
-git-repo-summarizer update-diff -- -t "変更内容" -t /path/to/your/repo -o diff.patch
+git-repo-summarizer update-diff -- -c "変更内容" -t /path/to/your/repo -o diff.patch
 ```
 
 **オプション**
 
-- `-t`, `--text`: 変更点を箇条書きで指定するテキスト
+- `-c`, `--change`: 変更点を箇条書きで指定するテキスト
 - `-t`, `--target`: 対象のリポジトリのパス
 - `-o`, `--output`: 出力ファイル名
 - `-m`, `--model_id`: 利用するGeminiモデルのID
