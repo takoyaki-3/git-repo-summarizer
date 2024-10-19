@@ -10,7 +10,8 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "readme": "node index.mjs readme",
     "update": "node index.mjs update",
-    "patch": "node index.mjs patch"
+    "patch": "node index.mjs patch",
+    "gemini": "node index.mjs gemini"
   },
   "bin": {
     "git-repo-summarizer": "./index.mjs"

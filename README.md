@@ -13,7 +13,7 @@
 
 -------------------
 
-## グローバルインストール
+## グローバルインストールによる利用方法
 
 このツールは、グローバルにインストールすることで、どのディレクトリからでもコマンドを使用できるようになります。
 
@@ -22,7 +22,7 @@
 1. プロジェクトをグローバルインストールします。
 
 ```bash
-npm install -g
+npm install -g git-repo-summarizer
 ```
 
 これにより、`git-repo-summarizer` コマンドがグローバルに登録されます。
@@ -42,20 +42,70 @@ git-repo-summarizer --version
 
 ### ドキュメント生成
 
+以下のコマンドを実行して、ドキュメントを生成します。
+
+**オプション**
+
 ```bash
 git-repo-summarizer mkdoc -- -t /path/to/your/repo -o document.md
 ```
 
+- `-t`, `--target`: 対象のリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
+- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `gemini-output-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
+- `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
+- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` より優先されます。
+
+**実行例**
+
+```bash
+npm run mkdoc -- -t ./my-project -o my-project-doc.md
+```
+
 ### Gitリポジトリ情報のMarkdown形式出力
+
+以下のコマンドを実行して、Gitリポジトリの情報をMarkdown形式で出力します。
 
 ```bash
 git-repo-summarizer summarize -- -t /path/to/your/repo -o output.md
 ```
 
+**オプション**
+
+- `-t`, `--target`: 対象のリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
+- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `git-repo-summary-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
+
+**実行例**
+
+```bash
+npm run summarize -- -t ./my-project -o my-project-summary.md
+```
+
 ### READMEの自動更新
+
+以下のコマンドを実行して、READMEを自動更新します。
 
 ```bash
 git-repo-summarizer readme -- -i /path/to/your/readme -o updated-readme.md
+```
+
+**オプション**
+
+- `-i`, `--input`: 更新対象のREADMEファイルのパスを指定します。
+- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `updated-readme-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
+- `-t`, `--target`: 対象のGitリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
+- `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
+- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` より優先されます。
+
+### Geminiへテキストを投げる
+
+```bash
+git-repo-summarizer gemini -- -i /path/to/your/inputfile -t "要約してください" -o output.md
+```
+
+**実行例**
+
+```bash
+npm run readme -- -t ./my-project -o my-project-readme.md
 ```
 
 --------------------
@@ -96,71 +146,6 @@ $env:GOOGLE_API_KEY = "YOUR_API_KEY"
 
 ```bash
 export GOOGLE_API_KEY="YOUR_API_KEY"
-```
-
-## 利用方法
-
-### ドキュメント生成
-
-以下のコマンドを実行して、ドキュメントを生成します。
-
-```bash
-npm run mkdoc -- -t /path/to/your/repo -o document.md
-```
-
-**オプション**
-
-- `-t`, `--target`: 対象のリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
-- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `gemini-output-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
-- `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
-- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` が設定されている場合はそちらが優先されます。
-
-**実行例**
-
-```bash
-npm run mkdoc -- -t ./my-project -o my-project-doc.md
-```
-
-### Gitリポジトリ情報のMarkdown形式出力
-
-以下のコマンドを実行して、Gitリポジトリの情報をMarkdown形式で出力します。
-
-```bash
-npm run summarize -- -t /path/to/your/repo -o output.md
-```
-
-**オプション**
-
-- `-t`, `--target`: 対象のリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
-- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `git-repo-summary-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
-
-**実行例**
-
-```bash
-npm run summarize -- -t ./my-project -o my-project-summary.md
-```
-
-### READMEの自動更新
-
-以下のコマンドを実行して、READMEを自動更新します。
-
-```bash
-npm run readme -- -i /path/to/your/readme -o updated-readme.md
-```
-
-**オプション**
-
-- `-i`, `--input`: 更新対象のREADMEファイルのパスを指定します。
-- `-o`, `--output`: 出力ファイル名を指定します。デフォルトは `updated-readme-YYYYMMDD-HHMMSS.md` のようなタイムスタンプ付きのファイル名になります。
-- `-t`, `--target`: 対象のGitリポジトリのパスを指定します。デフォルトはカレントディレクトリです。
-- `-m`, `--model_id`: 利用する Gemini のモデル ID を指定します。デフォルトは `gemini-1.5-pro` です。
-- `-k`, `--api_key`: Google Gemini API の API キーを指定します。環境変数 `GOOGLE_API_KEY` が設定されている場合はそちらが優先されます。
-
-
-**実行例**
-
-```bash
-npm run readme -- -t ./my-project -o my-project-readme.md
 ```
 
 ## ファイル構成

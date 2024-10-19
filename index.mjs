@@ -7,6 +7,7 @@ import { mkdocCommand } from './commands/mkdoc.mjs';
 import { readmeCommand } from './commands/readme.mjs';
 import { patchCommand } from './commands/patch.mjs';
 import { updateDiffCommand } from './commands/update.mjs';
+import { geminiCommand } from './commands/gemini.mjs';
 
 yargs(hideBin(process.argv))
   .command(summarizeCommand)
@@ -14,5 +15,6 @@ yargs(hideBin(process.argv))
   .command(readmeCommand)
   .command(patchCommand)
   .command(updateDiffCommand)
+  .command(geminiCommand)
   .help()
   .argv;
