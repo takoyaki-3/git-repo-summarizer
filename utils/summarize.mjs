@@ -1,7 +1,6 @@
 import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
 import path from 'path';
-import mime from 'mime-types';
 
 // Git管理されたファイルリストを取得
 function getGitFiles(repoPath) {
@@ -46,48 +45,21 @@ function formatTree(tree, indent = '') {
   return formatted;
 }
 
-function isTextFile(filePath) {
-  const mimeType = mime.lookup(filePath);
-  if (mimeType && mimeType.startsWith('text')) {
-    return true;
+async function isTextFile(filePath) {
+  try {
+    const content = await fs.readFile(filePath);
+    const maxBytesToCheck = 512;
+    const bytesToCheck = content.slice(0, maxBytesToCheck);
+    for (let i = 0; i < bytesToCheck.length; i++) {
+      if (bytesToCheck[i] === 0) {
+        return false; // binary file
+      }
+    }
+    return true; // text file
+  } catch (err) {
+    console.error(`Error reading file ${filePath}:`, err);
+    return false;
   }
-  const textFileExtensions = [
-    '.md',
-    '.yml',
-    '.yaml',
-    '.json',
-    '.jsx',
-    '.js',
-    '.ts',
-    '.py',
-    '.sh',
-    '.html',
-    '.css',
-    '.scss',
-    '.xml',
-    '.java',
-    '.rb',
-    '.php',
-    '.go',
-    '.rs',
-    '.txt',
-    'Dockerfile',
-    'Makefile',
-    '.gitignore',
-    '.editorconfig',
-    '.mjs',
-    '.c',
-    '.cpp',
-    '.h',
-    '.hpp',
-    '.cs',
-    '.swift',
-    '.kt',
-    '.gradle',
-    '.babelrc',
-  ];
-  const ext = path.extname(filePath);
-  return textFileExtensions.includes(ext);
 }
 
 export async function generateOutput(repoPath) {
@@ -106,7 +78,7 @@ export async function generateOutput(repoPath) {
     const filePath = path.join(repoPath, file);
     outputText += `#### ${file}\n\n`;
 
-    if (isTextFile(filePath)) {
+    if (await isTextFile(filePath)) {
       try {
         const content = await fs.readFile(filePath, 'utf-8');
         if (content.length > 100000) {
