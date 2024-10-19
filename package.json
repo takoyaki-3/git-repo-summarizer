@@ -9,6 +9,7 @@
     "mkdoc": "node index.mjs mkdoc",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "readme": "node index.mjs readme",
+    "update": "node index.mjs update",
     "patch": "node index.mjs patch"
   },
   "bin": {
