@@ -8,7 +8,8 @@
     "summarize": "node index.mjs summarize",
     "mkdoc": "node index.mjs mkdoc",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "readme": "node index.mjs readme"
+    "readme": "node index.mjs readme",
+    "apply-diff": "node index.mjs apply-diff"
   },
   "bin": {
     "git-repo-summarizer": "./index.mjs"
