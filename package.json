@@ -9,7 +9,7 @@
     "mkdoc": "node index.mjs mkdoc",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "readme": "node index.mjs readme",
-    "apply-diff": "node index.mjs apply-diff"
+    "patch": "node index.mjs patch"
   },
   "bin": {
     "git-repo-summarizer": "./index.mjs"

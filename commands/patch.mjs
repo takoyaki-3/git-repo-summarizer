@@ -1,8 +1,8 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 
-export const applyDiffCommand = {
-  command: 'apply-diff',
+export const patchCommand = {
+  command: 'patch',
   describe: 'diff形式の変更ファイルを入力として与え、変更を適用する',
   builder: (yargs) =>
     yargs
@@ -34,10 +34,19 @@ export const applyDiffCommand = {
 
       // 変更対象のファイルに対して変更を適用
       for (const patch of patches) {
-        const targetFilePath = path.join(targetDir, patch.newFileName);
+        const oldFilePath = path.join(targetDir, patch.oldFileName);
+        const newFilePath = path.join(targetDir, patch.newFileName);
 
         // ファイルの存在チェック
-        await fs.access(targetFilePath);
+        await fs.access(oldFilePath);
+
+        // ファイル名が変更されている場合、リネームを実行
+        if (patch.oldFileName !== patch.newFileName) {
+          await fs.rename(oldFilePath, newFilePath);
+          console.log(`ファイル名を変更しました: ${oldFilePath} → ${newFilePath}`);
+        }
+
+        const targetFilePath = newFilePath;
 
         const originalContent = await fs.readFile(targetFilePath, 'utf-8');
         const originalLines = originalContent.split(/\r?\n/);
