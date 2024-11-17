@@ -59,6 +59,16 @@ export GOOGLE_API_KEY="YOUR_API_KEY"
 npm install -g git-repo-summarizer
 ```
 
+### Gitの文字コード設定
+
+このツールを使うにあたりレポジトリに含まれるファイルに日本語が含まれる場合、次のコマンドにより文字コードを`utf8`に設定します。
+
+```sh
+git config --get core.quotepath
+git config --get i18n.logOutputEncoding
+git config --global core.quotepath false
+```
+
 ### コマンド
 
 #### `git-repo-summarizer summarize`
